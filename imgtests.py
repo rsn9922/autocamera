@@ -1,3 +1,4 @@
+from re import S
 from configmain import *
 '''
 Return 1 If Test Is Passed
@@ -45,8 +46,8 @@ def Image_Has_No_Noise(img):
     s_perc = np.sum(s[int(p * 255):-1]) / np.prod(image.shape[0:2])
     # Percentage threshold; above: valid image, below: noise
     s_thr = NOISE_SAT_THRESHOLD  # generally 0.5 used
-    print(s_perc)
-    print(s_thr)
+    #print(s_perc)
+    #print(s_thr)
     if s_perc > s_thr:
         return 0  # noise present
     else:
@@ -64,7 +65,7 @@ def Image_Not_Scrolled(img):
     white_pix = 0
     white_pix = np.sum(edges == 255)
 
-    print('Number of white pixels:', white_pix)
+    #print('Number of white pixels:', white_pix)
     if white_pix > (SCROLL_COLORCNT_PCT/100)*(IMG_WIDTH*IMG_HEIGHT):
         return 1  # not scrolled
     else:
@@ -263,24 +264,25 @@ def Image_Not_Rotated(test_img):
     If Image Not Rotated Returns 1
     If Image Rotated Returns 0
     '''
-    try:
-        img_gray = cv2.cvtColor(test_img, cv2.COLOR_BGR2GRAY)
-        img_edges = cv2.Canny(img_gray, 100, 100, apertureSize=3)
-        lines = cv2.HoughLinesP(img_edges, 1, math.pi / 180.0,
+    #try:
+    img_gray = cv2.cvtColor(test_img, cv2.COLOR_BGR2GRAY)
+    img_edges = cv2.Canny(img_gray, 100, 100, apertureSize=3)
+    lines = cv2.HoughLinesP(img_edges, 1, math.pi / 180.0,
                                 100, minLineLength=100, maxLineGap=5)
-        angles = []
-        for x1, y1, x2, y2 in lines[0]:
-            angle = math.degrees(math.atan2(y2 - y1, x2 - x1))
-            angles.append(angle)
+    angles = []
+    for x1, y1, x2, y2 in lines[0]:
+        angle = math.degrees(math.atan2(y2 - y1, x2 - x1))
+        angles.append(angle)
         median_angle = np.median(angles)
         rotated_angle = abs(round(median_angle))
-    except:
-        return 0  # image rotated
+    #except:
+        #return 0  # image rotated
     if rotated_angle > ROTATION_ANGLE_THRESHOLD_DEG:
-        return 0  # image is rotated > than threshold
+            #return 0  # image is rotated > than threshold
+        return {'rotated_test': 0, 'rotated_degree': rotated_angle}
     else:
-        return 1  # image is not rotated > than threshold
-
+            #return 1  # image is not rotated > than threshold
+        return {'rotated_test': 1, 'rotated_degree': rotated_angle}
 
 def Image_Horizontal_Shift(test_img, perfect_img):
     '''
@@ -296,14 +298,27 @@ def Image_Horizontal_Shift(test_img, perfect_img):
     testArea = w2 * h2
     areaDiff = perfectArea - testArea
     if areaDiff < SHIFT_AREA_THRESHOLD_PER:
-        if horizontalShift > LEFT_SHIFT_THRESHOLD_PER * 600 / 100:
-            return 1
+        """ if horizontalShift > LEFT_SHIFT_THRESHOLD_PER * 600 / 100:
+            #return 1
+            return {'horizontal_shift': 1, 'horizontal_shift_direction': horizontalShift,'horizontal_shift_percent': horizontalShift}
         elif horizontalShift < -RIGHT_SHIFT_THRESHOLD_PER * 600 / 100:
-            return 1
-        return 1
+            #return 1
+            return {'horizontal_shift': 1, 'horizontal_shift_percent': horizontalShift}"""
+        #return 1
+        #return {'horizontal_shift_test': 1, 'horizontal_shift_direction': 'noshift','horizontal_shift_percent': horizontalShift}
+        return {'horizontal_shift_test': 1, 'horizontal_shift_percent': horizontalShift}
     else:
-        return 0
+        #return 0
+        if horizontalShift > LEFT_SHIFT_THRESHOLD_PER * 600 / 100:
+            #return 1
+            #return {'horizontal_shift_test': 0, 'horizontal_shift_direction': 'moved_left','horizontal_shift_percent': horizontalShift}
+            return {'horizontal_shift_test': 0, 'horizontal_shift_percent': horizontalShift}
+        elif horizontalShift < -RIGHT_SHIFT_THRESHOLD_PER * 600 / 100:
+            #return 1
+            #return {'horizontal_shift_test': 0, 'horizontal_shift_direction': 'moved_right', 'horizontal_shift_percent': horizontalShift}
+            return {'horizontal_shift_test': 0, 'horizontal_shift_percent': horizontalShift}
 
+        
 
 def Image_Vertical_Shift(test_img, perfect_img):
     '''
@@ -314,19 +329,20 @@ def Image_Vertical_Shift(test_img, perfect_img):
     test_img_coords = detect_obj(test_img)
     (x1, y1, w1, h1) = perfect_img_coords
     (x2, y2, w2, h2) = test_img_coords
-    verticalShift = y1 - y2
+    vertical_shift = y1 - y2
     perfectArea = w1 * h1
     testArea = w2 * h2
     areaDiff = perfectArea - testArea
     if areaDiff < SHIFT_AREA_THRESHOLD_PER:
-        if verticalShift > TOP_SHIFT_THRESHOLD_PER * 400 / 100:
-            return 0
-        elif verticalShift < -BOTTOM_SHIFT_THRESOLD_PER * 400 / 100:
-            return 0
-        return 1
+        #return {'vertical_shift_test': 1, 'vertical_shift_direction': 'noshift','vertical_shift_percent': vertical_shift}
+        return {'vertical_shift_test': 1, 'vertical_shift_percent': vertical_shift}
     else:
-        return 0
-
+        if vertical_shift > TOP_SHIFT_THRESHOLD_PER * 400 / 100:
+            #return {'vertical_shift_test': 0, 'vertical_shift_direction': 'moved_top','vertical_shift_percent': vertical_shift}
+            return {'vertical_shift_test': 0,'vertical_shift_percent': vertical_shift}
+        elif vertical_shift < -BOTTOM_SHIFT_THRESOLD_PER * 400 / 100:
+            #return {'vertical_shift_test': 0, 'vertical_shift_direction': 'moved_bottom','vertical_shift_percent': vertical_shift}
+            return {'vertical_shift_test': 0, 'vertical_shift_percent': vertical_shift}
 
 def Image_Not_Inverted(test_img, perfect_img):
     '''
@@ -336,7 +352,11 @@ def Image_Not_Inverted(test_img, perfect_img):
     test_img = cv2.cvtColor(test_img, cv2.COLOR_BGR2GRAY)
     perfect_img = cv2.cvtColor(perfect_img, cv2.COLOR_BGR2GRAY)
     ssimscore = round(ssim(test_img, perfect_img))
-    if ssimscore == 1:
+    #check these values-ARun
+    #if ssimscore == 1
+    #if ssimscore > SSIM_SCORE_THRESHOLD_PCT:
+    #if ssimscore > SSIM_SCORE_THRESHOLD_PCT
+    if ssimscore > .90: 
         return 0  # inverted
     else:
         return 1  # not inverted
@@ -352,6 +372,7 @@ def Image_Not_Mirrored(test_img, perfect_img):
         perfect_img = cv2.cvtColor(perfect_img, cv2.COLOR_BGR2GRAY)
         test_img = cv2.flip(test_img, 1)
         score = ssim(test_img, perfect_img)
+        #if score >= MIRROR_THRESHOLD:
         if score >= MIRROR_THRESHOLD:
             return 0
         else:

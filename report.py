@@ -44,17 +44,34 @@ def generate_report(camid, test_img_path, perfect_img_path):
     ssim_score_pct = ssim(test_img_SSIM, perfect_img_SSIM)
 
     ssim_score_pct = float('{:.2f}'.format(ssim_score_pct))*100
+    image_rotated = Image_Not_Rotated(test_img_rotate)
+    image_horizontal = Image_Horizontal_Shift(test_img_shift, perfect_img_shift)
+    image_vertical = Image_Vertical_Shift(test_img_shift, perfect_img_shift)
+    #to remove the strings
+    #Evaluate the string value with literal_eval, and then assign it back to the key:
+    rotated_test = image_rotated['rotated_test']
+    rotated_degree = image_rotated['rotated_degree']
+    horizontal_shift_test = image_horizontal['horizontal_shift_test']
+    horizontal_shift_percent = image_horizontal['horizontal_shift_percent']
+    vertical_shift_test = image_vertical['vertical_shift_test']
+    vertical_shift_percent = image_vertical['vertical_shift_percent']
+            
 
     # checking SSIM condition and if satisfied, pass all the test cases
     if ssim_score_pct >= SSIM_SCORE_THRESHOLD_PCT:
         # return 1 for all tests in the code
 
         test_img_BRISQUE_score = BRISQUE_score(test_img_path)
+        #note the camid is add separetly. So the data is below 1 value less
+
         image_test_results = [1,
                               1,
                               1,
+                              0,
                               1,
+                              0,
                               1,
+                              0,
                               1,
                               1,
                               ssim_score_pct,
@@ -66,15 +83,20 @@ def generate_report(camid, test_img_path, perfect_img_path):
 
     else:
         # check all the tests
+        #old code that was used for testing and adding the shift information
+        #str(image_vertical['vertical_shift_direction']) +':' + str(image_vertical['vertical_shift_percent']),
+
         pass
         image_test_results = [
             Image_Not_Inverted(test_img, perfect_img),
             Image_Not_Mirrored(test_img, perfect_img),
-            Image_Not_Rotated(test_img_rotate),
-            Image_Horizontal_Shift(
-                test_img_shift, perfect_img_shift),
-            Image_Vertical_Shift(
-                test_img_shift, perfect_img_shift),
+            #image_rotated['rotated_test'],
+            eval(str(rotated_test)),
+            eval(str(rotated_degree)),
+            eval(str(horizontal_shift_test)),
+            eval(str(horizontal_shift_percent)),
+            eval(str(vertical_shift_test)),
+            eval(str(vertical_shift_percent)),
             Image_Not_Cropped_In_ROI(test_img, perfect_img),
             Image_Has_No_Noise_Staticlines_Scrolling_Blur(
                 test_img, test_img_scrolled),
@@ -84,3 +106,4 @@ def generate_report(camid, test_img_path, perfect_img_path):
         image_test_results = [camid] + image_test_results
         save_results(image_test_results)
         return image_test_results
+

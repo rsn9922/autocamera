@@ -1,0 +1,23 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python: Current File",
+      "type": "python",
+      "request": "launch",
+      "program": "./app.py",
+      "console": "integratedTerminal",
+      "args": [
+        "--camid",
+        "1",
+        "--image1test",
+        "./data/TestImages/rotate_test.png",
+        "--image2perfect",
+        "./data/TestImages/MSSL-AA-2021110700001_2022-02-21_11-21-05_master-image.png"
+      ]
+    }
+  ]
+}

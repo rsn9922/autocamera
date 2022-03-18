@@ -9,6 +9,9 @@ api = Api(app)
 
 class Places(Resource):
     def post(self):
+      
+
+        
         # parse request arguments
         parser = reqparse.RequestParser()
         parser.add_argument("camid", required=True)
@@ -30,8 +33,11 @@ class Places(Resource):
                       'Image_Not_Inverted',
                       'Image_Not_Mirrored',
                       'Image_Not_Rotated',
-                      'Image_Horizontal_Shift',
-                      'Image_Vertical_Shift',
+                      'Image_Rotated_Degree',
+                      'Image_No_Horizontal_Shift',
+                      'Image_Horizontal',
+                      'Image_No_Vertical_Shift',
+                      'Image_Vertical',
                       'Image_Not_Cropped_In_ROI',
                       'Image_Has_No_Noise_Staticlines_Scrolling_Blur',
                       'SSIM_Score',
@@ -41,11 +47,11 @@ class Places(Resource):
         # format the results
         dict_results = {test_names[i]: test_results[i]
                         for i in range(0, len(test_names))}
-        json_results = json.dumps(
-            dict_results, indent=0, sort_keys=False)
-
+        print(dict_results) 
+        ####we are not using json dumps, it is givng an error               
+        #json_results = json.dumps(
+        #    dict_results, indent=0, sort_keys=False)
         return dict_results, 201
-
 
 api.add_resource(Places, '/places')
 

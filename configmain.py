@@ -1,9 +1,12 @@
-# -*- coding: utf-8 -*-
+#-*- coding: utf-8 -*-
 # used for relative path calculation
+
+#import imquality.brisque as brisque
 import imquality.brisque as brisque
 import traceback
 import warnings
 from configparser import ConfigParser
+#from brisque import BRISQUE
 from brisque import BRISQUE
 import cv2
 import json
@@ -13,7 +16,9 @@ import csv
 import pandas as pd
 import ast
 from flask import Flask
+#from flask_restful import Api, Resource, reqparse
 from flask_restful import Api, Resource, reqparse
+
 import numpy as np
 from skimage import img_as_float, io
 from skimage.metrics import structural_similarity as ssim
