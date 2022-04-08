@@ -5,9 +5,9 @@ import numpy as np
 from skimage.metrics import structural_similarity as compare_ssim
 
 # Load the two images
-# Try different images given in the images folder
-img1 = cv2.imread("images/city1.png")
-img2 = cv2.imread("images/city2.png")
+# Try different images given in the folllowing folder "data/comaprision_images/.."
+img1 = cv2.imread("data/comparision_images/city1.png")
+img2 = cv2.imread("data/comparision_images/city2.png")
 # Resize images if necessary
 img1 = cv2.resize(img1, (600,360))
 img2 = cv2.resize(img2, (600,360))
