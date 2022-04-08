@@ -19,7 +19,7 @@ objp[0,:,:2] = np.mgrid[0:CHECKERBOARD[0], 0:CHECKERBOARD[1]].T.reshape(-1, 2)
 prev_img_shape = None
 
 # Extracting path of individual image stored in a given directory
-images = glob.glob('./images_checkerboard/*.jpg')
+images = glob.glob('.data/calibration_images/*.jpg')
 count=-1
 for fname in images:
     count=count+1
