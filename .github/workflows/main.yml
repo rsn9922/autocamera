@@ -29,3 +29,32 @@ jobs:
 
       - name: debug pyenv
         run: echo ${{ steps.pyenv_installation.outputs.pyenv_root }}
+
+name: Configuring python env for postgress
+# do the following jobs on push and on pull requests
+on: [push, pull_request]
+
+# define the jobs
+jobs:
+# first job is to set the servicea
+  setting-services:
+  # must runs on linux based operating system
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    services:
+      db_service:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
