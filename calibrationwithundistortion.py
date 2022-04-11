@@ -19,7 +19,7 @@ objp[0,:,:2] = np.mgrid[0:CHECKERBOARD[0], 0:CHECKERBOARD[1]].T.reshape(-1, 2)
 prev_img_shape = None
 
 # Extracting path of individual image stored in a given directory
-images = glob.glob('.data/calibration_images/*.jpg')
+images = glob.glob('./data/calibration_images/*.jpg')
 count=-1
 for fname in images:
     count=count+1
@@ -44,12 +44,12 @@ for fname in images:
 
         # Draw and display the corners
         img = cv2.drawChessboardCorners(img, CHECKERBOARD, corners2,ret)    
-        cv2.imshow('img'+str(count),img)
-        cv2.waitKey(0)    
+    cv2.imshow('img'+str(count),img)
+    cv2.waitKey(0)    
 
 cv2.destroyAllWindows()
 
-h,w = img.shape[:2]
+img_shape = img.shape[:2]
 
 """
 Performing camera calibration by 
@@ -73,13 +73,13 @@ print(tvecs)
 # We can use any image from range 0-40 to undistort
 img = cv2.imread(images[2])
 # Refining the camera matrix using parameters obtained by calibration
-newcameramtx, roi = cv2.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
+newcameramtx, roi = cv2.getOptimalNewCameraMatrix(mtx, dist, img_shape, 1, img_shape)
 
 # Method 1 to undistort the image
 dst = cv2.undistort(img, mtx, dist, None, newcameramtx)
 
 # Method 2 to undistort the image
-mapx,mapy=cv2.initUndistortRectifyMap(mtx,dist,None,newcameramtx,(w,h),5)
+mapx,mapy=cv2.initUndistortRectifyMap(mtx,dist,None,newcameramtx,img_shape,5)
 
 dst = cv2.remap(img,mapx,mapy,cv2.INTER_LINEAR)
 
