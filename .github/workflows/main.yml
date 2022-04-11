@@ -52,6 +52,12 @@ jobs:
         # Set health checks to wait until postgres started
         options: >-
           --health-cmd pg_isready
+ - name: Install dependencies
+  run: pip install -r requirements.txt --upgrade pip
+       pip install pylint
+- name: Analysing the code with pylint
+  run: |
+    pylint `ls -R|grep .py$|xargs`
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
