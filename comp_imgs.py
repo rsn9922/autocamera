@@ -19,7 +19,6 @@ gray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
 gray2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
 (score, diff) = compare_ssim(gray1, gray2, full=True)
 # Find the difference between the two images
-# Calculate absolute difference between two arrays 
 diff = cv2.absdiff(gray1, gray2)
 cv2.imshow("Difference between img1 and img2", diff)
 
@@ -28,8 +27,8 @@ thresh = cv2.threshold(diff, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
 #cv2.imshow("Threshold image", thresh)
 
 # Dilation
-kernel = np.ones((5,5), np.uint8) 
-dilate = cv2.dilate(thresh, kernel, iterations=2) 
+kernel = np.ones((5,5), np.uint8)
+dilate = cv2.dilate(thresh, kernel, iterations=2)
 cv2.imshow("Dilated image", dilate)
 
 # Calculate contours
